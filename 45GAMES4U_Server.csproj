@@ -68,6 +68,12 @@
     <Compile Include="Presentacion\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentacion\FormInventario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentacion\FormInventario.Designer.cs">
+      <DependentUpon>FormInventario.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentacion\TiendaForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Presentacion\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentacion\FormInventario.resx">
+      <DependentUpon>FormInventario.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentacion\TiendaForm.resx">
       <DependentUpon>TiendaForm.cs</DependentUpon>

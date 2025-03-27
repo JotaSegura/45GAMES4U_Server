@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServerApp.Forms;
+using System;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -68,6 +69,12 @@ namespace ServerApp
         private void btnClientes_Click(object sender, EventArgs e)
         {
             var form = new ClienteForm();
+            form.ShowDialog();
+        }
+
+        private void btnInventario_Click(object sender, EventArgs e)
+        {
+            var form = new FormInventario();
             form.ShowDialog();
         }
     }

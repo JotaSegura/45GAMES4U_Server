@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using Entities;
+using System.Data;
 
 namespace ServerApp
 {
@@ -240,10 +241,12 @@ namespace ServerApp
                         INNER JOIN Administrador a ON t.Id_Administrador = a.Identificacion";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
-                conn.Open();
 
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                try
                 {
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
                     while (reader.Read())
                     {
                         tiendas.Add(new TiendaEntidad
@@ -263,7 +266,14 @@ namespace ServerApp
                         });
                     }
                 }
+                catch (Exception ex)
+                {
+                    // Loggear el error
+                    Console.WriteLine($"Error al obtener tiendas: {ex.Message}");
+                    throw; // Relanzar la excepción para manejo superior
+                }
             }
+
             return tiendas;
         }
 
@@ -316,6 +326,193 @@ namespace ServerApp
                 }
             }
             return clientes;
+        }
+
+        public List<TiendaEntidad> ObtenerTiendasActivas()
+        {
+            var tiendas = new List<TiendaEntidad>();
+
+            using (var conn = new SqlConnection(_cadenaConexion))
+            {
+                var query = @"SELECT t.Id, t.Nombre, t.Direccion, t.Telefono, 
+                            a.Identificacion, a.Nombre AS AdminNombre,
+                            a.PrimerApellido, a.SegundoApellido
+                            FROM Tienda t
+                            INNER JOIN Administrador a ON t.Id_Administrador = a.Identificacion
+                            WHERE t.Activa = 1
+                            ORDER BY t.Nombre";
+
+                var cmd = new SqlCommand(query, conn);
+
+                try
+                {
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            tiendas.Add(new TiendaEntidad
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Nombre = reader["Nombre"].ToString(),
+                                Direccion = reader["Direccion"].ToString(),
+                                Telefono = reader["Telefono"].ToString(),
+                                Activa = true,
+                                Administrador = new AdministradorEntidad
+                                {
+                                    Identificacion = Convert.ToInt32(reader["Identificacion"]),
+                                    Nombre = reader["AdminNombre"].ToString(),
+                                    PrimerApellido = reader["PrimerApellido"].ToString(),
+                                    SegundoApellido = reader["SegundoApellido"].ToString()
+                                }
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener tiendas activas", ex);
+                }
+            }
+
+            return tiendas;
+        }
+
+        public List<VideojuegoEntidad> ObtenerVideojuegosFisicos()
+        {
+            var videojuegos = new List<VideojuegoEntidad>();
+
+            using (var conn = new SqlConnection(_cadenaConexion))
+            {
+                var query = @"SELECT v.Id, v.Nombre, v.Desarrollador, v.Lanzamiento,
+                            t.Id AS TipoId, t.Nombre AS TipoNombre
+                            FROM Videojuego v
+                            INNER JOIN TipoVideojuego t ON v.Id_TipoVideojuego = t.Id
+                            WHERE v.Fisico = 1
+                            ORDER BY v.Nombre";
+
+                var cmd = new SqlCommand(query, conn);
+
+                try
+                {
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            videojuegos.Add(new VideojuegoEntidad
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Nombre = reader["Nombre"].ToString(),
+                                Desarrollador = reader["Desarrollador"].ToString(),
+                                Lanzamiento = Convert.ToInt32(reader["Lanzamiento"]),
+                                Fisico = true,
+                                TipoVideojuego = new TipoVideojuegoEntidad
+                                {
+                                    Id = Convert.ToInt32(reader["TipoId"]),
+                                    Nombre = reader["TipoNombre"].ToString()
+                                }
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener videojuegos físicos", ex);
+                }
+            }
+
+            return videojuegos;
+        }
+
+        public bool AsociarVideojuegoTienda(int idTienda, int idVideojuego, int existencias)
+        {
+            using (var conn = new SqlConnection(_cadenaConexion))
+            {
+                var query = @"IF EXISTS (SELECT 1 FROM VideojuegosXTienda 
+                            WHERE Id_Tienda = @IdTienda AND Id_Videojuego = @IdVideojuego)
+                            BEGIN
+                                UPDATE VideojuegosXTienda 
+                                SET Existencias = Existencias + @Existencias
+                                WHERE Id_Tienda = @IdTienda AND Id_Videojuego = @IdVideojuego
+                            END
+                            ELSE
+                            BEGIN
+                                INSERT INTO VideojuegosXTienda 
+                                (Id_Tienda, Id_Videojuego, Existencias)
+                                VALUES (@IdTienda, @IdVideojuego, @Existencias)
+                            END";
+
+                var cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@IdTienda", idTienda);
+                cmd.Parameters.AddWithValue("@IdVideojuego", idVideojuego);
+                cmd.Parameters.AddWithValue("@Existencias", existencias);
+
+                try
+                {
+                    conn.Open();
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al asociar videojuego a tienda", ex);
+                }
+            }
+        }
+
+        public List<VideojuegosXTiendaEntidad> ObtenerInventarioCompleto()
+        {
+            var inventario = new List<VideojuegosXTiendaEntidad>();
+
+            using (var conn = new SqlConnection(_cadenaConexion))
+            {
+                var query = @"SELECT t.Id AS TiendaId, t.Nombre AS TiendaNombre, t.Direccion,
+                            v.Id AS VideojuegoId, v.Nombre AS VideojuegoNombre,
+                            tv.Nombre AS TipoNombre, vxt.Existencias
+                            FROM VideojuegosXTienda vxt
+                            INNER JOIN Tienda t ON vxt.Id_Tienda = t.Id
+                            INNER JOIN Videojuego v ON vxt.Id_Videojuego = v.Id
+                            INNER JOIN TipoVideojuego tv ON v.Id_TipoVideojuego = tv.Id
+                            ORDER BY t.Nombre, v.Nombre";
+
+                var cmd = new SqlCommand(query, conn);
+
+                try
+                {
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            inventario.Add(new VideojuegosXTiendaEntidad
+                            {
+                                Tienda = new TiendaEntidad
+                                {
+                                    Id = Convert.ToInt32(reader["TiendaId"]),
+                                    Nombre = reader["TiendaNombre"].ToString(),
+                                    Direccion = reader["Direccion"].ToString()
+                                },
+                                Videojuego = new VideojuegoEntidad
+                                {
+                                    Id = Convert.ToInt32(reader["VideojuegoId"]),
+                                    Nombre = reader["VideojuegoNombre"].ToString(),
+                                    TipoVideojuego = new TipoVideojuegoEntidad
+                                    {
+                                        Nombre = reader["TipoNombre"].ToString()
+                                    }
+                                },
+                                Existencias = Convert.ToInt32(reader["Existencias"])
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener inventario completo", ex);
+                }
+            }
+
+            return inventario;
         }
 
         // Obtener administradores para ComboBox
