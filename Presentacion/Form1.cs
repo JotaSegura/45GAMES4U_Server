@@ -52,5 +52,11 @@ namespace ServerApp
             var form = new VideojuegoForm();
             form.ShowDialog();
         }
+
+        private void btnAdministradores_Click(object sender, EventArgs e)
+        {
+            var form = new AdministradorForm();
+            form.ShowDialog();
+        }
     }
 }

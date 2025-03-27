@@ -140,6 +140,71 @@ namespace ServerApp
             return videojuegos;
         }
 
+        // Insertar nuevo administrador
+        public bool InsertarAdministrador(AdministradorEntidad admin)
+        {
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = @"INSERT INTO Administrador 
+                        (Identificacion, Nombre, PrimerApellido, SegundoApellido, FechaNacimiento, FechaContratacion)
+                        VALUES (@Identificacion, @Nombre, @Apellido1, @Apellido2, @FechaNac, @FechaCont)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Identificacion", (int)admin.Identificacion);
+                cmd.Parameters.AddWithValue("@Nombre", admin.Nombre);
+                cmd.Parameters.AddWithValue("@Apellido1", admin.PrimerApellido);
+                cmd.Parameters.AddWithValue("@Apellido2", admin.SegundoApellido);
+                cmd.Parameters.AddWithValue("@FechaNac", admin.FechaNacimiento.Date);
+                cmd.Parameters.AddWithValue("@FechaCont", admin.FechaContratacion.Date);
+
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // Obtener todos los administradores
+        public List<AdministradorEntidad> ObtenerAdministradores()
+        {
+            List<AdministradorEntidad> admins = new List<AdministradorEntidad>();
+
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = "SELECT * FROM Administrador";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    admins.Add(new AdministradorEntidad
+                    {
+                        Identificacion = Convert.ToInt32(reader["Identificacion"]),
+                        Nombre = reader["Nombre"].ToString(),
+                        PrimerApellido = reader["PrimerApellido"].ToString(),
+                        SegundoApellido = reader["SegundoApellido"].ToString(),
+                        FechaNacimiento = Convert.ToDateTime(reader["FechaNacimiento"]),
+                        FechaContratacion = Convert.ToDateTime(reader["FechaContratacion"])
+                    });
+                }
+            }
+            return admins;
+        }
+
+        // Verificar si identificación ya existe
+        public bool ExisteAdministrador(long identificacion)
+        {
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = "SELECT COUNT(1) FROM Administrador WHERE Identificacion = @Id";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Id", identificacion);
+
+                conn.Open();
+                return (int)cmd.ExecuteScalar() > 0;
+            }
+        }
+
         // Obtener tipos de videojuego para el ComboBox
         public List<TipoVideojuegoEntidad> ObtenerTiposParaCombo()
         {

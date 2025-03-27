@@ -33,6 +33,7 @@
             this.txtBitacora = new System.Windows.Forms.TextBox();
             this.btnTiposVideojuegos = new System.Windows.Forms.Button();
             this.btnVideojuego = new System.Windows.Forms.Button();
+            this.btnAdministradores = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnIniciarServidor
@@ -83,11 +84,22 @@
             this.btnVideojuego.UseVisualStyleBackColor = true;
             this.btnVideojuego.Click += new System.EventHandler(this.btnVideojuego_Click);
             // 
+            // btnAdministradores
+            // 
+            this.btnAdministradores.Location = new System.Drawing.Point(194, 160);
+            this.btnAdministradores.Name = "btnAdministradores";
+            this.btnAdministradores.Size = new System.Drawing.Size(252, 23);
+            this.btnAdministradores.TabIndex = 5;
+            this.btnAdministradores.Text = "Agregar y Consultar Administradores";
+            this.btnAdministradores.UseVisualStyleBackColor = true;
+            this.btnAdministradores.Click += new System.EventHandler(this.btnAdministradores_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnAdministradores);
             this.Controls.Add(this.btnVideojuego);
             this.Controls.Add(this.btnTiposVideojuegos);
             this.Controls.Add(this.txtBitacora);
@@ -107,5 +119,6 @@
         private System.Windows.Forms.TextBox txtBitacora;
         private System.Windows.Forms.Button btnTiposVideojuegos;
         private System.Windows.Forms.Button btnVideojuego;
+        private System.Windows.Forms.Button btnAdministradores;
     }
 }
