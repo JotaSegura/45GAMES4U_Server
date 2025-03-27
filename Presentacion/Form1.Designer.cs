@@ -35,11 +35,14 @@
             this.btnVideojuego = new System.Windows.Forms.Button();
             this.btnAdministradores = new System.Windows.Forms.Button();
             this.btnTiendas = new System.Windows.Forms.Button();
+            this.btnClientes = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnIniciarServidor
             // 
-            this.btnIniciarServidor.Location = new System.Drawing.Point(193, 28);
+            this.btnIniciarServidor.Location = new System.Drawing.Point(193, 8);
             this.btnIniciarServidor.Name = "btnIniciarServidor";
             this.btnIniciarServidor.Size = new System.Drawing.Size(254, 23);
             this.btnIniciarServidor.TabIndex = 0;
@@ -57,17 +60,17 @@
             // 
             // txtBitacora
             // 
-            this.txtBitacora.Location = new System.Drawing.Point(16, 30);
+            this.txtBitacora.Location = new System.Drawing.Point(16, 52);
             this.txtBitacora.Multiline = true;
             this.txtBitacora.Name = "txtBitacora";
             this.txtBitacora.ReadOnly = true;
             this.txtBitacora.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtBitacora.Size = new System.Drawing.Size(171, 348);
+            this.txtBitacora.Size = new System.Drawing.Size(772, 176);
             this.txtBitacora.TabIndex = 2;
             // 
             // btnTiposVideojuegos
             // 
-            this.btnTiposVideojuegos.Location = new System.Drawing.Point(194, 80);
+            this.btnTiposVideojuegos.Location = new System.Drawing.Point(16, 255);
             this.btnTiposVideojuegos.Name = "btnTiposVideojuegos";
             this.btnTiposVideojuegos.Size = new System.Drawing.Size(252, 23);
             this.btnTiposVideojuegos.TabIndex = 3;
@@ -77,7 +80,7 @@
             // 
             // btnVideojuego
             // 
-            this.btnVideojuego.Location = new System.Drawing.Point(194, 109);
+            this.btnVideojuego.Location = new System.Drawing.Point(16, 284);
             this.btnVideojuego.Name = "btnVideojuego";
             this.btnVideojuego.Size = new System.Drawing.Size(253, 23);
             this.btnVideojuego.TabIndex = 4;
@@ -87,7 +90,7 @@
             // 
             // btnAdministradores
             // 
-            this.btnAdministradores.Location = new System.Drawing.Point(195, 138);
+            this.btnAdministradores.Location = new System.Drawing.Point(17, 313);
             this.btnAdministradores.Name = "btnAdministradores";
             this.btnAdministradores.Size = new System.Drawing.Size(252, 23);
             this.btnAdministradores.TabIndex = 5;
@@ -97,7 +100,7 @@
             // 
             // btnTiendas
             // 
-            this.btnTiendas.Location = new System.Drawing.Point(195, 167);
+            this.btnTiendas.Location = new System.Drawing.Point(17, 342);
             this.btnTiendas.Name = "btnTiendas";
             this.btnTiendas.Size = new System.Drawing.Size(252, 23);
             this.btnTiendas.TabIndex = 6;
@@ -105,11 +108,42 @@
             this.btnTiendas.UseVisualStyleBackColor = true;
             this.btnTiendas.Click += new System.EventHandler(this.btnTiendas_Click);
             // 
+            // btnClientes
+            // 
+            this.btnClientes.Location = new System.Drawing.Point(17, 372);
+            this.btnClientes.Name = "btnClientes";
+            this.btnClientes.Size = new System.Drawing.Size(252, 23);
+            this.btnClientes.TabIndex = 7;
+            this.btnClientes.Text = "Agregar y Consultar Clientes";
+            this.btnClientes.UseVisualStyleBackColor = true;
+            this.btnClientes.Click += new System.EventHandler(this.btnClientes_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(17, 235);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(91, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Ingreso de Datos ";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(20, 30);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(46, 13);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Bitacora";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnClientes);
             this.Controls.Add(this.btnTiendas);
             this.Controls.Add(this.btnAdministradores);
             this.Controls.Add(this.btnVideojuego);
@@ -133,5 +167,8 @@
         private System.Windows.Forms.Button btnVideojuego;
         private System.Windows.Forms.Button btnAdministradores;
         private System.Windows.Forms.Button btnTiendas;
+        private System.Windows.Forms.Button btnClientes;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

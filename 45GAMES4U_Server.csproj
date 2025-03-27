@@ -56,6 +56,12 @@
     <Compile Include="Presentacion\AdministradorForm.Designer.cs">
       <DependentUpon>AdministradorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Presentacion\ClienteForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentacion\ClienteForm.Designer.cs">
+      <DependentUpon>ClienteForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Presentacion\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +91,9 @@
     <Compile Include="ServidorTCP.cs" />
     <EmbeddedResource Include="Presentacion\AdministradorForm.resx">
       <DependentUpon>AdministradorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentacion\ClienteForm.resx">
+      <DependentUpon>ClienteForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentacion\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

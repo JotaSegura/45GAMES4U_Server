@@ -64,5 +64,11 @@ namespace ServerApp
             var form = new TiendaForm();
             form.ShowDialog();
         }
+
+        private void btnClientes_Click(object sender, EventArgs e)
+        {
+            var form = new ClienteForm();
+            form.ShowDialog();
+        }
     }
 }

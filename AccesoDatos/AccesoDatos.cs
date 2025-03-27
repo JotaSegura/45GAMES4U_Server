@@ -267,6 +267,57 @@ namespace ServerApp
             return tiendas;
         }
 
+        // Insertar nuevo cliente
+        public bool InsertarCliente(ClienteEntidad cliente)
+        {
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = @"INSERT INTO Cliente 
+                        (Identificacion, Nombre, PrimerApellido, SegundoApellido, FechaNacimiento, JugadorEnLinea)
+                        VALUES (@Identificacion, @Nombre, @Apellido1, @Apellido2, @FechaNac, @JugadorOnline)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Identificacion", cliente.Identificacion);
+                cmd.Parameters.AddWithValue("@Nombre", cliente.Nombre);
+                cmd.Parameters.AddWithValue("@Apellido1", cliente.PrimerApellido);
+                cmd.Parameters.AddWithValue("@Apellido2", cliente.SegundoApellido);
+                cmd.Parameters.AddWithValue("@FechaNac", cliente.FechaNacimiento.Date);
+                cmd.Parameters.AddWithValue("@JugadorOnline", cliente.JugadorEnLinea);
+
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // Obtener todos los clientes
+        public List<ClienteEntidad> ObtenerClientes()
+        {
+            List<ClienteEntidad> clientes = new List<ClienteEntidad>();
+
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = "SELECT * FROM Cliente";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    clientes.Add(new ClienteEntidad
+                    {
+                        Identificacion = Convert.ToInt32(reader["Identificacion"]),
+                        Nombre = reader["Nombre"].ToString(),
+                        PrimerApellido = reader["PrimerApellido"].ToString(),
+                        SegundoApellido = reader["SegundoApellido"].ToString(),
+                        FechaNacimiento = Convert.ToDateTime(reader["FechaNacimiento"]),
+                        JugadorEnLinea = Convert.ToBoolean(reader["JugadorEnLinea"])
+                    });
+                }
+            }
+            return clientes;
+        }
+
         // Obtener administradores para ComboBox
         public List<AdministradorEntidad> ObtenerAdministradoresParaCombo()
         {
