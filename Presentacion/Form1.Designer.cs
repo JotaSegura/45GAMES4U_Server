@@ -34,13 +34,14 @@
             this.btnTiposVideojuegos = new System.Windows.Forms.Button();
             this.btnVideojuego = new System.Windows.Forms.Button();
             this.btnAdministradores = new System.Windows.Forms.Button();
+            this.btnTiendas = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnIniciarServidor
             // 
             this.btnIniciarServidor.Location = new System.Drawing.Point(193, 28);
             this.btnIniciarServidor.Name = "btnIniciarServidor";
-            this.btnIniciarServidor.Size = new System.Drawing.Size(87, 23);
+            this.btnIniciarServidor.Size = new System.Drawing.Size(254, 23);
             this.btnIniciarServidor.TabIndex = 0;
             this.btnIniciarServidor.Text = "IniciarServidor";
             this.btnIniciarServidor.UseVisualStyleBackColor = true;
@@ -76,7 +77,7 @@
             // 
             // btnVideojuego
             // 
-            this.btnVideojuego.Location = new System.Drawing.Point(193, 130);
+            this.btnVideojuego.Location = new System.Drawing.Point(194, 109);
             this.btnVideojuego.Name = "btnVideojuego";
             this.btnVideojuego.Size = new System.Drawing.Size(253, 23);
             this.btnVideojuego.TabIndex = 4;
@@ -86,7 +87,7 @@
             // 
             // btnAdministradores
             // 
-            this.btnAdministradores.Location = new System.Drawing.Point(194, 160);
+            this.btnAdministradores.Location = new System.Drawing.Point(195, 138);
             this.btnAdministradores.Name = "btnAdministradores";
             this.btnAdministradores.Size = new System.Drawing.Size(252, 23);
             this.btnAdministradores.TabIndex = 5;
@@ -94,11 +95,22 @@
             this.btnAdministradores.UseVisualStyleBackColor = true;
             this.btnAdministradores.Click += new System.EventHandler(this.btnAdministradores_Click);
             // 
+            // btnTiendas
+            // 
+            this.btnTiendas.Location = new System.Drawing.Point(195, 167);
+            this.btnTiendas.Name = "btnTiendas";
+            this.btnTiendas.Size = new System.Drawing.Size(252, 23);
+            this.btnTiendas.TabIndex = 6;
+            this.btnTiendas.Text = "Agregar y Consultar Tiendas";
+            this.btnTiendas.UseVisualStyleBackColor = true;
+            this.btnTiendas.Click += new System.EventHandler(this.btnTiendas_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnTiendas);
             this.Controls.Add(this.btnAdministradores);
             this.Controls.Add(this.btnVideojuego);
             this.Controls.Add(this.btnTiposVideojuegos);
@@ -120,5 +132,6 @@
         private System.Windows.Forms.Button btnTiposVideojuegos;
         private System.Windows.Forms.Button btnVideojuego;
         private System.Windows.Forms.Button btnAdministradores;
+        private System.Windows.Forms.Button btnTiendas;
     }
 }

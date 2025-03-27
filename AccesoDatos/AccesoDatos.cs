@@ -205,10 +205,81 @@ namespace ServerApp
             }
         }
 
-        // Obtener tipos de videojuego para el ComboBox
-        public List<TipoVideojuegoEntidad> ObtenerTiposParaCombo()
+        // Insertar nueva tienda
+        public bool InsertarTienda(TiendaEntidad tienda)
         {
-            return ObtenerTiposVideojuegos(); // Reutilizamos el método existente
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = @"INSERT INTO Tienda 
+                        (Nombre, Id_Administrador, Direccion, Telefono, Activa)
+                        VALUES (@Nombre, @IdAdmin, @Direccion, @Telefono, @Activa)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Nombre", tienda.Nombre);
+                cmd.Parameters.AddWithValue("@IdAdmin", tienda.Administrador.Identificacion);
+                cmd.Parameters.AddWithValue("@Direccion", tienda.Direccion);
+                cmd.Parameters.AddWithValue("@Telefono", tienda.Telefono);
+                cmd.Parameters.AddWithValue("@Activa", tienda.Activa);
+
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // Obtener todas las tiendas con info de administrador
+        public List<TiendaEntidad> ObtenerTiendas()
+        {
+            List<TiendaEntidad> tiendas = new List<TiendaEntidad>();
+
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = @"SELECT t.Id, t.Nombre, t.Direccion, t.Telefono, t.Activa,
+                        a.Identificacion, a.Nombre as AdminNombre, 
+                        a.PrimerApellido, a.SegundoApellido
+                        FROM Tienda t
+                        INNER JOIN Administrador a ON t.Id_Administrador = a.Identificacion";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tiendas.Add(new TiendaEntidad
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            Nombre = reader["Nombre"].ToString(),
+                            Direccion = reader["Direccion"].ToString(),
+                            Telefono = reader["Telefono"].ToString(),
+                            Activa = Convert.ToBoolean(reader["Activa"]),
+                            Administrador = new AdministradorEntidad
+                            {
+                                Identificacion = Convert.ToInt32(reader["Identificacion"]),
+                                Nombre = reader["AdminNombre"].ToString(),
+                                PrimerApellido = reader["PrimerApellido"].ToString(),
+                                SegundoApellido = reader["SegundoApellido"].ToString()
+                            }
+                        });
+                    }
+                }
+            }
+            return tiendas;
+        }
+
+        // Obtener administradores para ComboBox
+        public List<AdministradorEntidad> ObtenerAdministradoresParaCombo()
+        {
+            var admins = ObtenerAdministradores();
+
+            // Debug: Verificar datos recuperados
+            Console.WriteLine($"Administradores encontrados: {admins.Count}");
+            foreach (var admin in admins)
+            {
+                Console.WriteLine($"{admin.Identificacion}: {admin.NombreCompleto}");
+            }
+
+            return admins;
         }
     }
 }

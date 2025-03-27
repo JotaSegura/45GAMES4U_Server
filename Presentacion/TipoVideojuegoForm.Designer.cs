@@ -59,7 +59,7 @@
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(75, 23);
             this.btnGuardar.TabIndex = 2;
-            this.btnGuardar.Text = "button1";
+            this.btnGuardar.Text = "Guardar";
             this.btnGuardar.UseVisualStyleBackColor = true;
             // 
             // dgvTipos
@@ -93,18 +93,18 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(40, 132);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(166, 13);
+            this.label3.Size = new System.Drawing.Size(163, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Registros de Tipo de Videojuegos";
+            this.label3.Text = "Tipo de Videojuegos Registrados";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(304, 18);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 13);
+            this.label4.Size = new System.Drawing.Size(156, 13);
             this.label4.TabIndex = 7;
-            this.label4.Text = "TIpo de Videojuego";
+            this.label4.Text = "Registro de Tipo de Videojuego";
             // 
             // TipoVideojuegoForm
             // 

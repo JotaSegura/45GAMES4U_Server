@@ -132,6 +132,9 @@ namespace ServerApp
 
             if (string.IsNullOrWhiteSpace(txtPrimerApellido.Text))
                 throw new Exception("El primer apellido es requerido");
+
+            if (string.IsNullOrWhiteSpace(txtSegundoApellido.Text))
+                throw new Exception("El segundo apellido es requerido");
         }
 
         private void LimpiarCampos()
@@ -140,7 +143,7 @@ namespace ServerApp
             txtNombre.Clear();
             txtPrimerApellido.Clear();
             txtSegundoApellido.Clear();
-            dtpFechaNacimiento.Value = DateTime.Today.AddYears(-20);
+            dtpFechaNacimiento.Value = DateTime.Today;
             dtpFechaContratacion.Value = DateTime.Today;
             txtIdentificacion.Focus();
         }
