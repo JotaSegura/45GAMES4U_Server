@@ -1,4 +1,5 @@
-﻿using ServerApp;
+﻿using Entities;
+using ServerApp;
 using System;
 using System.IO;
 using System.Net;
@@ -75,14 +76,14 @@ namespace ServerApp
                 if (mensaje.StartsWith("VALIDAR_CLIENTE"))
                 {
                     string[] parts = mensaje.Split('|');
-                    string identificacion = parts[1];  // Ahora la identificación es un string
+                    long identificacion = long.Parse(parts[1]);
 
-                    bool clienteExiste = AccesoDatos.VerificarClienteEnServidor(identificacion);  // Pasa el string
+                    Cliente clienteData = AccesoDatos.ObtenerClientePorIdentificacion(identificacion);
 
-                    if (clienteExiste)
+                    if (clienteData != null)
                     {
-                        var clienteDatos = AccesoDatos.ObtenerClientePorIdentificacion(identificacion);
-                        writer.WriteLine("CLIENTE_EXISTE");
+                        // Enviar los datos del cliente
+                        writer.WriteLine($"CLIENTE_EXISTE|{clienteData.Nombre}|{clienteData.PrimerApellido}|{clienteData.SegundoApellido}");
                         LogBitacora($"Cliente con identificación {identificacion} verificado.");
                     }
                     else
@@ -101,6 +102,7 @@ namespace ServerApp
                 cliente.Close();
             }
         }
+
 
 
         private void LogBitacora(string mensaje)

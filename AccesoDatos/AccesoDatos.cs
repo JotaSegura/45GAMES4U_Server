@@ -113,7 +113,7 @@ namespace ServerApp
             }
         }
 
-            public static Cliente ObtenerClientePorIdentificacion(string identificacion)
+            public static Cliente ObtenerClientePorIdentificacion(long identificacion)
             {
                 Cliente cliente = null;
 

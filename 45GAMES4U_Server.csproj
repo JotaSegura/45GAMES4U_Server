@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccesoDatos\AccesoDatos.cs" />
-    <Compile Include="Cliente.cs" />
+    <Compile Include="EntidadesUnicas\Cliente.cs" />
     <Compile Include="Presentacion\AdministradorForm.cs">
       <SubType>Form</SubType>
     </Compile>
