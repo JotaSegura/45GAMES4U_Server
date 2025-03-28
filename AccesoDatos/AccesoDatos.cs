@@ -3,11 +3,20 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 using Entities;
 using System.Data;
+using System.IO;
+using System.Net.Sockets;
+using System.Text;
+using System.Windows.Forms;
 
 namespace ServerApp
 {
     public class AccesoDatos
     {
+        private const string IP_SERVIDOR = "127.0.0.1";
+        private const int PUERTO_SERVIDOR = 14100;
+        // Cadena de conexión a la base de datos SQL Server
+        private static string connectionString = "Data Source=JOTA\\SQLEXPRESS;Initial Catalog=GAMES4U2;Integrated Security=True;Encrypt=False;";
+
         private string _cadenaConexion = "Data Source=JOTA\\SQLEXPRESS;Initial Catalog=GAMES4U2;Integrated Security=True;Encrypt=False;";
 
 
@@ -103,6 +112,85 @@ namespace ServerApp
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
+
+            public static Cliente ObtenerClientePorIdentificacion(string identificacion)
+            {
+                Cliente cliente = null;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    try
+                    {
+                        conn.Open();
+                        string query = "SELECT Nombre, PrimerApellido, SegundoApellido FROM Cliente WHERE Identificacion = @Identificacion";
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            // Agregar parámetro para la consulta
+                            cmd.Parameters.AddWithValue("@Identificacion", identificacion);
+
+                            // Ejecutar la consulta y leer los datos
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    // Si el cliente existe, crear un objeto Cliente con los datos
+                                    cliente = new Cliente
+                                    {
+                                        Identificacion = identificacion,
+                                        Nombre = reader["Nombre"].ToString(),
+                                        PrimerApellido = reader["PrimerApellido"].ToString(),
+                                        SegundoApellido = reader["SegundoApellido"].ToString()
+                                    };
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Manejo de excepciones
+                        Console.WriteLine("Error al obtener los datos del cliente: " + ex.Message);
+                    }
+                }
+
+                return cliente; // Si no se encuentra, devuelve null
+            }
+       
+
+
+
+        public static bool VerificarClienteEnServidor(string identificacion)
+{
+    bool clienteExiste = false;
+    
+    try
+    {
+        // Asegúrate de que la conexión a la base de datos está configurada correctamente
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            conn.Open();
+            string query = "SELECT COUNT(*) FROM Cliente WHERE Identificacion = @Identificacion";
+            
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@Identificacion", identificacion);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                
+                if (count > 0)
+                {
+                    clienteExiste = true;
+                }
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        //LogBitacora($"Error al verificar cliente: {ex.Message}");
+    }
+
+    return clienteExiste;
+}
+
+
 
         public List<VideojuegoEntidad> ObtenerVideojuegos()
         {

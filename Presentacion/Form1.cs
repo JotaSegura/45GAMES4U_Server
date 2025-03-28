@@ -55,7 +55,7 @@ namespace ServerApp
 
         private void btnServidor_Click(object sender, EventArgs e)
         {
-            var form = new frmPrincipalServidor();
+            var form = new ServidorForm();
             form.ShowDialog();
         }
     }
