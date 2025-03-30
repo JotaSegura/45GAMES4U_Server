@@ -28,6 +28,7 @@ namespace ServerApp
             // 
             // btnDetenerServidor
             // 
+            this.btnDetenerServidor.Enabled = false;
             this.btnDetenerServidor.Location = new System.Drawing.Point(12, 41);
             this.btnDetenerServidor.Name = "btnDetenerServidor";
             this.btnDetenerServidor.Size = new System.Drawing.Size(175, 23);
@@ -35,7 +36,6 @@ namespace ServerApp
             this.btnDetenerServidor.Text = "Detener Servidor";
             this.btnDetenerServidor.UseVisualStyleBackColor = true;
             this.btnDetenerServidor.Click += new System.EventHandler(this.btnDetenerServidor_Click);
-            this.btnDetenerServidor.Enabled = false; // Deshabilitado al inicio
             // 
             // txtBitacora
             // 
@@ -48,13 +48,15 @@ namespace ServerApp
             // 
             // ServidorForm
             // 
-            this.ClientSize = new System.Drawing.Size(484, 281);
+            this.ClientSize = new System.Drawing.Size(511, 299);
             this.Controls.Add(this.txtBitacora);
             this.Controls.Add(this.btnDetenerServidor);
             this.Controls.Add(this.btnIniciarServidor);
+            this.Font = new System.Drawing.Font("Century Gothic", 10F);
             this.Name = "ServidorForm";
             this.Text = "Servidor TCP";
             this.ResumeLayout(false);
+
         }
     }
 }

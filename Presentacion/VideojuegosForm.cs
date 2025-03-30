@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+  * Uned Primer Cuatrimestre 2025
+  * Proyecto 2: Servidor TCP y conectividad con base de datos
+  * Estudiante: Jaroth Segura Valverde
+  * Fecha de Entrega: 6 de Abril 2025
+ */
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using Entities;
@@ -7,28 +13,28 @@ namespace ServerApp
 {
     public partial class VideojuegoForm : Form
     {
+        // Instancia de la clase AccesoDatos para interactuar con la base de datos
         private AccesoDatos _accesoDatos = new AccesoDatos();
 
         public VideojuegoForm()
         {
             InitializeComponent();
-            btnGuardar.Click += new EventHandler(btnGuardar_Click);//Asociar el evento click al boton guardar
             ConfigurarControles();
             CargarDatosIniciales();
         }
 
+        // Método para configurar los controles del formulario
         private void ConfigurarControles()
         {
             // Configuración del ComboBox de Formato
             cmbFormato.Items.AddRange(new[] { "Físico", "Virtual" });
-            cmbFormato.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbFormato.SelectedIndex = 0;
 
             // Configuración del DataGridView
             dgvVideojuegos.AutoGenerateColumns = false;
             ConfigurarColumnasGrid();
         }
 
+        // Método para configurar las columnas del DataGridView
         private void ConfigurarColumnasGrid()
         {
             dgvVideojuegos.Columns.Clear();
@@ -78,15 +84,17 @@ namespace ServerApp
             };
             dgvVideojuegos.Columns.Add(colFormato);
 
-            // Manejar el evento CellFormatting para mostrar el tipo
+            // Manejar el evento CellFormatting para mostrar el tipo y formato
             dgvVideojuegos.CellFormatting += (sender, e) =>
             {
+                // Mostrar el nombre del tipo de videojuego
                 if (dgvVideojuegos.Columns[e.ColumnIndex].Name == "colTipo" && e.Value == null)
                 {
                     var videojuego = (VideojuegoEntidad)dgvVideojuegos.Rows[e.RowIndex].DataBoundItem;
                     e.Value = videojuego?.TipoVideojuego?.Nombre;
                 }
 
+                // Mostrar el formato del videojuego (Físico o Virtual)
                 if (dgvVideojuegos.Columns[e.ColumnIndex].Name == "colFormato" && e.Value == null)
                 {
                     var videojuego = (VideojuegoEntidad)dgvVideojuegos.Rows[e.RowIndex].DataBoundItem;
@@ -95,26 +103,31 @@ namespace ServerApp
             };
         }
 
+        // Método para cargar los datos iniciales en el formulario
         private void CargarDatosIniciales()
         {
-            // Cargar tipos de videojuego
+            // Cargar tipos de videojuego en el ComboBox
             cmbTipo.DataSource = _accesoDatos.ObtenerTiposVideojuegos();
             cmbTipo.DisplayMember = "Nombre";
             cmbTipo.ValueMember = "Id";
 
-            // Cargar videojuegos existentes
+            // Cargar videojuegos existentes en el DataGridView
             dgvVideojuegos.DataSource = _accesoDatos.ObtenerVideojuegos();
         }
 
+        // Evento click del botón Guardar
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
+                // Validar los campos del formulario
                 ValidarCampos();
 
+                // Verificar si el videojuego ya existe
                 if (ExisteVideojuego(txtNombre.Text.Trim()))
                     throw new Exception("Este videojuego ya existe");
 
+                // Crear una nueva instancia de VideojuegoEntidad con los datos del formulario
                 var videojuego = new VideojuegoEntidad
                 {
                     Nombre = txtNombre.Text.Trim(),
@@ -124,6 +137,7 @@ namespace ServerApp
                     TipoVideojuego = (TipoVideojuegoEntidad)cmbTipo.SelectedItem
                 };
 
+                // Insertar el videojuego en la base de datos
                 if (_accesoDatos.InsertarVideojuego(videojuego))
                 {
                     MessageBox.Show("Videojuego registrado exitosamente", "Éxito",
@@ -139,6 +153,7 @@ namespace ServerApp
             }
         }
 
+        // Método para validar los campos del formulario
         private void ValidarCampos()
         {
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
@@ -154,12 +169,14 @@ namespace ServerApp
                 throw new Exception("Debe seleccionar un tipo de videojuego");
         }
 
+        // Método para verificar si un videojuego ya existe
         private bool ExisteVideojuego(string nombre)
         {
             var videojuegos = _accesoDatos.ObtenerVideojuegos();
             return videojuegos.Any(v => v.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase));
         }
 
+        // Método para limpiar los campos del formulario
         private void LimpiarCampos()
         {
             txtNombre.Clear();
@@ -168,17 +185,6 @@ namespace ServerApp
             cmbFormato.SelectedIndex = 0;
             cmbTipo.SelectedIndex = 0;
             txtNombre.Focus();
-        }
-
-        // Clase para mostrar "Físico"/"Virtual" en el DataGridView
-        private class FormatoConverter : IFormatProvider, ICustomFormatter
-        {
-            public object GetFormat(Type formatType) => formatType == typeof(ICustomFormatter) ? this : null;
-
-            public string Format(string format, object arg, IFormatProvider formatProvider)
-            {
-                return arg is bool ? ((bool)arg ? "Físico" : "Virtual") : arg.ToString();
-            }
         }
     }
 }

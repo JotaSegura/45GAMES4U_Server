@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+  * Uned Primer Cuatrimestre 2025
+  * Proyecto 2: Servidor TCP y conectividad con base de datos
+  * Estudiante: Jaroth Segura Valverde
+  * Fecha de Entrega: 6 de Abril 2025
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,29 +13,24 @@ using ServerApp;
 
 namespace ServerApp.Forms
 {
-    public partial class FormInventario : Form
+    public partial class InventarioForm : Form
     {
-        private readonly AccesoDatos _accesoDatos;
+        // Instancia de la clase AccesoDatos para interactuar con la base de datos
+        private AccesoDatos _accesoDatos = new AccesoDatos();
 
-        public FormInventario()
+        // Constructor del formulario
+        public InventarioForm()
         {
             InitializeComponent();
-            _accesoDatos = new AccesoDatos();
             ConfigurarControles();
         }
 
+        // Método para configurar los controles del formulario
         private void ConfigurarControles()
         {
-            // Configuración básica del ComboBox
-            cmbTiendas.DropDownStyle = ComboBoxStyle.DropDownList;
-
             // Configurar DataGridViews
             dgvVideojuegos.AutoGenerateColumns = false;
-            dgvVideojuegos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvVideojuegos.MultiSelect = true;
-
             dgvInventario.AutoGenerateColumns = false;
-            dgvInventario.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
             // Configurar columnas del DataGridView de Videojuegos
             dgvVideojuegos.Columns.Add(new DataGridViewTextBoxColumn
@@ -102,7 +103,7 @@ namespace ServerApp.Forms
                 Width = 80
             });
 
-            // Solo números en las existencias
+            // Configurar el TextBox para que solo acepte números
             txtExistencias.KeyPress += (s, e) =>
             {
                 if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
@@ -112,11 +113,13 @@ namespace ServerApp.Forms
             };
         }
 
+        // Evento que se ejecuta al cargar el formulario
         private void FormInventario_Load(object sender, EventArgs e)
         {
             CargarDatosIniciales();
         }
 
+        // Método para cargar los datos iniciales en el formulario
         private void CargarDatosIniciales()
         {
             try
@@ -142,6 +145,7 @@ namespace ServerApp.Forms
             }
         }
 
+        // Método para cargar las tiendas activas en el ComboBox
         private void CargarTiendas()
         {
             try
@@ -185,13 +189,14 @@ namespace ServerApp.Forms
             }
         }
 
+        // Método para cargar los videojuegos físicos en el DataGridView
         private void CargarVideojuegosFisicos()
         {
             try
             {
                 var videojuegos = _accesoDatos.ObtenerVideojuegosFisicos();
 
-                // Crear lista anónima para mostrar en el DataGridView
+                // Crear lista para mostrar en el DataGridView
                 var datosParaMostrar = videojuegos.Select(v => new
                 {
                     v.Id,
@@ -209,13 +214,14 @@ namespace ServerApp.Forms
             }
         }
 
+        // Método para cargar el inventario completo en el DataGridView
         private void CargarInventario()
         {
             try
             {
                 var inventario = _accesoDatos.ObtenerInventarioCompleto();
 
-                // Crear lista anónima para mostrar en el DataGridView
+                // Crear lista para mostrar en el DataGridView
                 var datosParaMostrar = inventario.Select(i => new
                 {
                     TiendaId = i.Tienda.Id,
@@ -234,9 +240,10 @@ namespace ServerApp.Forms
             }
         }
 
+        // Evento que se ejecuta al hacer clic en el botón "Asociar"
         private void btnAsociar_Click(object sender, EventArgs e)
         {
-
+            // Validar los datos antes de proceder
             if (!ValidarDatosAsociacion()) return;
 
             try
@@ -247,6 +254,7 @@ namespace ServerApp.Forms
                 int existencias = int.Parse(txtExistencias.Text);
                 int asociacionesExitosas = 0;
 
+                // Asociar cada videojuego seleccionado con la tienda
                 foreach (DataGridViewRow row in dgvVideojuegos.SelectedRows)
                 {
                     int idVideojuego = (int)row.Cells["colId"].Value;
@@ -257,6 +265,7 @@ namespace ServerApp.Forms
                     }
                 }
 
+                // Mostrar mensaje de éxito o error según el resultado
                 if (asociacionesExitosas > 0)
                 {
                     MostrarMensaje($"Se asociaron {asociacionesExitosas} videojuegos correctamente.",
@@ -280,6 +289,7 @@ namespace ServerApp.Forms
             }
         }
 
+        // Método para validar los datos antes de asociar videojuegos con tiendas
         private bool ValidarDatosAsociacion()
         {
             if (cmbTiendas.SelectedIndex == -1)
@@ -303,52 +313,36 @@ namespace ServerApp.Forms
             return true;
         }
 
+        // Método para limpiar la selección de videojuegos y el TextBox de existencias
         private void LimpiarSeleccion()
         {
             txtExistencias.Clear();
             dgvVideojuegos.ClearSelection();
         }
 
+        // Evento que se ejecuta al hacer clic en el botón "Actualizar"
         private void btnActualizar_Click(object sender, EventArgs e)
         {
             CargarDatosIniciales();
         }
 
+        // Evento que se ejecuta al hacer clic en el botón "Limpiar"
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             LimpiarSeleccion();
         }
 
+        // Método para mostrar un mensaje de error en un MessageBox
         private void MostrarError(string mensaje, Exception ex)
         {
             MessageBox.Show($"{mensaje}: {ex.Message}", "Error",
                           MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        // Método para mostrar un mensaje en un MessageBox
         private void MostrarMensaje(string mensaje, MessageBoxIcon icono)
         {
             MessageBox.Show(mensaje, "Inventario", MessageBoxButtons.OK, icono);
-        }
-
-        // Método para diagnóstico del ComboBox
-        private void VerificarComboBox()
-        {
-            string mensaje = $"Items en ComboBox: {cmbTiendas.Items.Count}\n";
-            mensaje += $"DataSource: {(cmbTiendas.DataSource == null ? "Null" : "Asignado")}\n";
-            mensaje += $"DisplayMember: {cmbTiendas.DisplayMember}\n";
-            mensaje += $"ValueMember: {cmbTiendas.ValueMember}\n";
-
-            if (cmbTiendas.DataSource is List<TiendaEntidad> tiendas)
-            {
-                mensaje += $"\nTiendas cargadas: {tiendas.Count}\n";
-                foreach (var tienda in tiendas.Take(3))
-                {
-                    mensaje += $"- {tienda.Id}: {tienda.Nombre}\n";
-                }
-                if (tiendas.Count > 3) mensaje += "...\n";
-            }
-
-            MessageBox.Show(mensaje, "Estado del ComboBox", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

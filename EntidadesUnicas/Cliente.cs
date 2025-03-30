@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+  * Uned Primer Cuatrimestre 2025
+  * Proyecto 2: Servidor TCP y conectividad con base de datos
+  * Estudiante: Jaroth Segura Valverde
+  * Fecha de Entrega: 6 de Abril 2025
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

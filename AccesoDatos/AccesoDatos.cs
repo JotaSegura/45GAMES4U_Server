@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+  * Uned Primer Cuatrimestre 2025
+  * Proyecto 2: Servidor TCP y conectividad con base de datos
+  * Estudiante: Jaroth Segura Valverde
+  * Fecha de Entrega: 6 de Abril 2025
+ */
+using System;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using Entities;
@@ -12,108 +18,18 @@ namespace ServerApp
 {
     public class AccesoDatos
     {
+        // Dirección IP y puerto del servidor TCP
         private const string IP_SERVIDOR = "127.0.0.1";
         private const int PUERTO_SERVIDOR = 14100;
         // Cadena de conexión a la base de datos SQL Server
         private static string connectionString = "Data Source=JOTA\\SQLEXPRESS;Initial Catalog=GAMES4U2;Integrated Security=True;Encrypt=False;";
-
         private string _cadenaConexion = "Data Source=JOTA\\SQLEXPRESS;Initial Catalog=GAMES4U2;Integrated Security=True;Encrypt=False;";
 
 
-        // Insertar nuevo tipo de Videojuego
-        public bool InsertarTipoVideojuego(TipoVideojuegoEntidad tipo)
-        {
-            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
-            {
-                string query = "INSERT INTO TipoVideojuego (Nombre, Descripcion) VALUES (@Nombre, @Descripcion)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Nombre", tipo.Nombre);
-                cmd.Parameters.AddWithValue("@Descripcion", tipo.Descripcion);
 
-                conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
-            }
-        }
 
-        // Obtener todos los tipos
-        public List<TipoVideojuegoEntidad> ObtenerTiposVideojuegos()
-        {
-            List<TipoVideojuegoEntidad> tipos = new List<TipoVideojuegoEntidad>();
-
-            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
-            {
-                string query = "SELECT Id, Nombre, Descripcion FROM TipoVideojuego";
-                SqlCommand cmd = new SqlCommand(query, conn);
-
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    tipos.Add(new TipoVideojuegoEntidad
-                    {
-                        Id = Convert.ToInt32(reader["Id"]),
-                        Nombre = reader["Nombre"].ToString(),
-                        Descripcion = reader["Descripcion"].ToString()
-                    });
-                }
-            }
-            return tipos;
-        }
-
-       //Método para validar cliente
-        public ClienteEntidad ValidarCliente(int identificacion)
-        {
-            ClienteEntidad cliente = null;
-
-            using (SqlConnection conexion = new SqlConnection(_cadenaConexion))
-            {
-                string query = "SELECT Nombre, PrimerApellido, SegundoApellido, JugadorEnLinea " +
-                              "FROM Cliente WHERE Identificacion = @Identificacion";
-
-                SqlCommand comando = new SqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@Identificacion", identificacion);
-
-                conexion.Open();
-                SqlDataReader reader = comando.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    cliente = new ClienteEntidad
-                    {
-                        Identificacion = identificacion,
-                        Nombre = reader["Nombre"].ToString(),
-                        PrimerApellido = reader["PrimerApellido"].ToString(),
-                        SegundoApellido = reader["SegundoApellido"].ToString(),
-                        JugadorEnLinea = (bool)reader["JugadorEnLinea"]
-                    };
-                }
-            }
-
-            return cliente;
-        }
-
-        public bool InsertarVideojuego(VideojuegoEntidad videojuego)
-        {
-            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
-            {
-                string query = @"INSERT INTO Videojuego 
-                        (Nombre, Id_TipoVideojuego, Desarrollador, Lanzamiento, Fisico)
-                        VALUES (@Nombre, @IdTipo, @Desarrollador, @Lanzamiento, @Fisico)";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Nombre", videojuego.Nombre);
-                cmd.Parameters.AddWithValue("@IdTipo", videojuego.TipoVideojuego.Id);
-                cmd.Parameters.AddWithValue("@Desarrollador", videojuego.Desarrollador);
-                cmd.Parameters.AddWithValue("@Lanzamiento", videojuego.Lanzamiento);
-                cmd.Parameters.AddWithValue("@Fisico", videojuego.Fisico);
-
-                conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
-            }
-        }
-
-            public static Cliente ObtenerClientePorIdentificacion(long identificacion)
+        #region Metodos para el servidorTCP
+        public static Cliente ObtenerClientePorIdentificacion(long identificacion)
             {
                 Cliente cliente = null;
 
@@ -156,8 +72,6 @@ namespace ServerApp
             }
        
 
-
-
         public static bool VerificarClienteEnServidor(string identificacion)
 {
     bool clienteExiste = false;
@@ -189,9 +103,72 @@ namespace ServerApp
 
     return clienteExiste;
 }
+        #endregion
 
+        #region Metodos usados en Servidor solucion para sus formularios
+        // Insertar nuevo tipo de Videojuego
+        public bool InsertarTipoVideojuego(TipoVideojuegoEntidad tipo)
+        {
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = "INSERT INTO TipoVideojuego (Nombre, Descripcion) VALUES (@Nombre, @Descripcion)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Nombre", tipo.Nombre);
+                cmd.Parameters.AddWithValue("@Descripcion", tipo.Descripcion);
 
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
 
+        // Obtener todos los tipos
+        public List<TipoVideojuegoEntidad> ObtenerTiposVideojuegos()
+        {
+            List<TipoVideojuegoEntidad> tipos = new List<TipoVideojuegoEntidad>();
+
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = "SELECT Id, Nombre, Descripcion FROM TipoVideojuego";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    tipos.Add(new TipoVideojuegoEntidad
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        Nombre = reader["Nombre"].ToString(),
+                        Descripcion = reader["Descripcion"].ToString()
+                    });
+                }
+            }
+            return tipos;
+        }
+
+        //Metodo para insertar un videojuego
+        public bool InsertarVideojuego(VideojuegoEntidad videojuego)
+        {
+            using (SqlConnection conn = new SqlConnection(_cadenaConexion))
+            {
+                string query = @"INSERT INTO Videojuego 
+                        (Nombre, Id_TipoVideojuego, Desarrollador, Lanzamiento, Fisico)
+                        VALUES (@Nombre, @IdTipo, @Desarrollador, @Lanzamiento, @Fisico)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Nombre", videojuego.Nombre);
+                cmd.Parameters.AddWithValue("@IdTipo", videojuego.TipoVideojuego.Id);
+                cmd.Parameters.AddWithValue("@Desarrollador", videojuego.Desarrollador);
+                cmd.Parameters.AddWithValue("@Lanzamiento", videojuego.Lanzamiento);
+                cmd.Parameters.AddWithValue("@Fisico", videojuego.Fisico);
+
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+        
+        //Metodo para obtener todos los vieojuegos
         public List<VideojuegoEntidad> ObtenerVideojuegos()
         {
             List<VideojuegoEntidad> videojuegos = new List<VideojuegoEntidad>();
@@ -416,6 +393,7 @@ namespace ServerApp
             return clientes;
         }
 
+        //Obtener todas las tiendas activas
         public List<TiendaEntidad> ObtenerTiendasActivas()
         {
             var tiendas = new List<TiendaEntidad>();
@@ -466,6 +444,7 @@ namespace ServerApp
             return tiendas;
         }
 
+        //Metodo para obtener todos los videojuegos fisicos
         public List<VideojuegoEntidad> ObtenerVideojuegosFisicos()
         {
             var videojuegos = new List<VideojuegoEntidad>();
@@ -513,6 +492,7 @@ namespace ServerApp
             return videojuegos;
         }
 
+        //Metodo para asocias los videojuegos fisicos con las diferentes tiendas
         public bool AsociarVideojuegoTienda(int idTienda, int idVideojuego, int existencias)
         {
             using (var conn = new SqlConnection(_cadenaConexion))
@@ -548,6 +528,7 @@ namespace ServerApp
             }
         }
 
+        //Metodo para Obtener todo el inventario
         public List<VideojuegosXTiendaEntidad> ObtenerInventarioCompleto()
         {
             var inventario = new List<VideojuegosXTiendaEntidad>();
@@ -603,19 +584,7 @@ namespace ServerApp
             return inventario;
         }
 
-        // Obtener administradores para ComboBox
-        public List<AdministradorEntidad> ObtenerAdministradoresParaCombo()
-        {
-            var admins = ObtenerAdministradores();
-
-            // Debug: Verificar datos recuperados
-            Console.WriteLine($"Administradores encontrados: {admins.Count}");
-            foreach (var admin in admins)
-            {
-                Console.WriteLine($"{admin.Identificacion}: {admin.NombreCompleto}");
-            }
-
-            return admins;
-        }
+        #endregion
     }
+
 }
